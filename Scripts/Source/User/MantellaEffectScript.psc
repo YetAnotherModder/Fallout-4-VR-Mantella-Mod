@@ -1,25 +1,61 @@
 Scriptname MantellaEffectScript extends activemagiceffect
 Import SUP_F4SEVR
 Topic property MantellaDialogueLine auto
+GlobalVariable property MantellaWaitTimeBuffer auto
 
 MantellaRepository property repository auto
 string wavfilelocation="Data\\Sound\\Voice\\Mantella.esp\\MutantellaOutput1.wav"
+float localMenuTimer
+Float meterUnits = 78.74
 
 event OnEffectStart(Actor target, Actor caster)
+    ;cleanupstep below checks if the player is targeting someone and cleans up all conversation if that's the case
+    bool casterIsPlayer=false
+    if caster == Game.GetPlayer()
+        casterIsPlayer=true
         debug.notification("Cleaning up before starting conversation")
         repository.endFlagMantellaConversationOne = True
         Utility.Wait(0.5)
         repository.endFlagMantellaConversationOne = False
+    endif
+    String activeActors = SUP_F4SEVR.ReadStringFromFile("_mantella_active_actors.txt",0,10)
+    String actorCountString = SUP_F4SEVR.ReadStringFromFile("_mantella_actor_count.txt",0,1) 
+    int actorCount = actorCountString as int
+    String character_selection_enabled = SUP_F4SEVR.ReadStringFromFile("_mantella_character_selection.txt",0,1) 
 
+    string actorName = target.GetDisplayName()
+    String casterName = caster.getdisplayname()
+    ;debug.messagebox ("MantellaEffectScript:"+casterName+" casting Mantella on "+actorName)
+    ;if radiant dialogue between two NPCs, label them 1 & 2
+    if (casterName == actorName)
+        if actorCount == 0
+            actorName = actorName + " 1"
+            casterName = casterName + " 2"
+        elseIf actorCount == 1
+            actorName = actorName + " 2"
+            casterName = casterName + " 1"
+        endIf
+    endIf
+
+    int index = SUP_F4SEVR.SUPStringFind(activeActors, actorName,0,0)
+    bool actorAlreadyLoaded = true
+    if index == -1
+        actorAlreadyLoaded = false
+    endIf
+
+    if (actorAlreadyLoaded == false) && (character_selection_enabled == "True")
+        ;ENABLE THE NEXT LINE AFTER SETTING UP CK
+        ;TargetRefAlias.ForceRefTo(target)
+    
         String actorId = (target.getactorbase() as form).getformid()
-        debug.notification("Actor ID is "+actorId)
+        ;debug.notification("Actor ID is "+actorId)
         ;MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false) THIS IS HOW THE FUNCTION LOOKS IN SKYRIM
-        ;SUP_F4SE.WriteStringToFile(string sFilePath,string sText, int iAppend [0 for clean file, 1 for append, 2 for append with new line])
+        ;SUP_F4SEVR.WriteStringToFile(string sFilePath,string sText, int iAppend [0 for clean file, 1 for append, 2 for append with new line])
         SUP_F4SEVR.WriteStringToFile("_mantella_current_actor_id.txt",actorId, 0)
-        string actorName = target.GetDisplayName()
         SUP_F4SEVR.WriteStringToFile("_mantella_current_actor.txt",actorName, 0)
         ;this will eventually be rewritten when multi-NPC conversation is implemented in FO4
-        SUP_F4SEVR.WriteStringToFile("_mantella_active_actors.txt",actorName, 2)
+        SUP_F4SEVR.WriteStringToFile("_mantella_active_actors.txt",actorName, 1)
+        ;debug.messagebox("Current active actors "+SUP_F4SEVR.ReadStringFromFile("_mantella_active_actors.txt",0,10))
         SUP_F4SEVR.WriteStringToFile("_mantella_character_selection.txt","false",0)
 
         String actorSex = target.getleveledactorbase().getsex()
@@ -46,33 +82,58 @@ event OnEffectStart(Actor target, Actor caster)
         endIf
         SUP_F4SEVR.WriteStringToFile("_mantella_current_location.txt", currLoc, 0)
 
-        ;not currently implemented properly because Fallout time function needs a bit of modification either on papyrus or python side before
-        int Time = 8  
+        int Time = GetCurrentHourOfDay()
         SUP_F4SEVR.WriteStringToFile("_mantella_in_game_time.txt", Time, 0)
 
         ;will eventually be modified when multi-NPC conversation are added to FO4
-        int actorCount = 1
+        actorCount += 1
         SUP_F4SEVR.WriteStringToFile("_mantella_actor_count.txt", actorCount, 0)
-        string sayFinalLine
-        repository.endFlagMantellaConversationOne = false
-        int loopCount
+
         if actorCount == 1 ; reset player input if this is the first actor selected
             SUP_F4SEVR.WriteStringToFile("_mantella_text_input_enabled.txt", "False", 0)
             SUP_F4SEVR.WriteStringToFile("_mantella_text_input.txt", "", 0)
+            ;NEED TO ENABLE ONCE EVENT TRACKING FOR PLAYER IS ADDED
+            ;SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "", 0)
         endif
-        debug.notification("Initial setup finished")
+        ;debug.notification("Initial setup finished")
         
+        if casterIsPlayer
+		    Debug.Notification("Starting conversation with " + actorName)
+        elseIf actorCount == 1
+            Debug.Notification("Starting radiant dialogue with " + actorName + " and " + casterName)
+        endIf
 
-        while repository.endFlagMantellaConversationOne == false
-            MainConversationLoop( target, caster, loopCount)
-            loopCount+=1
+        
+        repository.endFlagMantellaConversationOne = false
+        bool endConversation = false
+        string sayFinalLine
+        String sayLineFile = "_mantella_say_line_"+actorCount+".txt"
+        int loopCount
+
+        ; Wait for first voiceline to play to avoid old conversation playing
+        Utility.Wait(0.5)
+
+        SUP_F4SEVR.WriteStringToFile("_mantella_character_selected.txt", "True", 0)
+        while repository.endFlagMantellaConversationOne == false && endConversation == false
+            if actorCount == 1
+                MainConversationLoop( target, caster, loopCount)
+                loopCount+=1
+            Else
+                ConversationLoop(target, caster, actorName, sayLineFile)
+            endif
+
+
             if sayFinalLine == "True"
-                repository.endFlagMantellaConversationOne = True
-                ;localMenuTimer = -1
+                endConversation = True
+                localMenuTimer = -1
             endIf
             sayFinalLine = SUP_F4SEVR.ReadStringFromFile("_mantella_end_conversation.txt",0, 2) 
         endWhile
-        debug.messagebox("Conversation has ended")
+        debug.notification("Conversation with "+actorName+" has ended")
+    Else
+        Debug.Notification("NPC not added. Please try again after your next response.")    
+    endif
+    
 
 endevent
 
@@ -80,34 +141,24 @@ function MainConversationLoop(Actor target, Actor caster, int loopCount)
         String sayLine = SUP_F4SEVR.ReadStringFromFile("_mantella_say_line.txt",0,99) 
 
         if sayLine != "False" && !SUP_F4SEVR.IsMenuModeActive()
-            ;target.SetLookAt(caster, false)
+            target.SetLookAt(caster, false)
             Utility.wait (0.1)
             ;This function is there to activate the lip file, the audio for MantellaDialogue line is actually 10 seconds of silence.
             target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
-            sayline = setWavLocationAndGetReturnLine(sayline)
-            ;##########################################
-            SUP_F4SEVR.WriteStringToFile("_mantella_audio_ready.txt", "true", 0)
-            debug.notification(target.GetDisplayName()+":"+sayline)
-            string audioIsPlaying = "true"
-            debug.notification("Starting while loop waiting for audio to finish playing")
-            While audioIsPlaying == "true"
-                audioIsPlaying= SUP_F4SEVR.ReadStringFromFile("_mantella_audio_ready.txt",0,99)
-            endwhile
-            ;##########################################          
-            ;SUP_F4SEVR has to be use instead of target.say() because Fallout 4 will hold previous voiceline inside its cache unlike Skyrim
-            ;SUP_F4SEVR.MP3LoadFile(wavfilelocation)
-            ;SUP_F4SEVR.MP3Play() 
-                ;while SUP_F4SEVR.MP3IsPlaying()
-            ;while SUP_F4SEVR.MP3HasFinishedPlaying() != true
-            ;    Utility.wait (0.1)
-            ;endWhile
-            ;debug.messagebox(sayline+" has finished playing")
-            ;Utility.wait (0.8)
-            ;SUP_F4SEVR.MP3Stop()
+            ;###the function  internalMantellaAudioPlay is deprecated with F4SE 11.60   ###
+            ;internalMantellaAudioPlay(sayline, target) 
+            externalMantellaAudioPlay(sayline, target)
             SUP_F4SEVR.WriteStringToFile("_mantella_say_line.txt", "False", 0)
+            localMenuTimer = -1
+           
         endif
+            
 
         if loopCount % 5 == 0
+            ;move Time tracking to this section for it to run less frequently
+            int Time = GetCurrentHourOfDay()
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_time.txt", Time, 0)
+
             String status = SUP_F4SEVR.ReadStringFromFile("_mantella_status.txt",0,99) 
             if status != "False"
                 Debug.Notification(status)
@@ -121,11 +172,68 @@ function MainConversationLoop(Actor target, Actor caster, int loopCount)
             endIf
         endIf
 
+        if loopCount % 20 == 0
+            String radiantDialogue = SUP_F4SEVR.ReadStringFromFile("_mantella_radiant_dialogue.txt",0,2) 
+            if radiantDialogue == "True"
+                float distanceBetweenActors = caster.GetDistance(target)
+                float distanceToPlayer = ConvertGameUnitsToMeter(caster.GetDistance(game.getplayer()))
+                ;Debug.Notification(distanceBetweenActors)
+                ;TODO: allow distanceBetweenActos limit to be customisable
+                if (distanceBetweenActors > 1500) || (distanceToPlayer > repository.radiantDistance) || (caster.GetCurrentLocation() != target.GetCurrentLocation()) || (caster.GetCurrentScene() != None) || (target.GetCurrentScene() != None)
+                    Debug.messagebox("Conversation ended, possibly because of distance "+distanceBetweenActors)
+                    SUP_F4SEVR.WriteStringToFile("_mantella_end_conversation.txt", "True", 0)
+                endIf
+            endIf
+        endIf
 endfunction
 
+;### Function below is depcrecated with the updated of F4SE to 11.60 ###
+; function internalMantellaAudioPlay(string sayline, actor target)
+;    sayline = setWavLocationAndGetReturnLine(sayline)
+;    debug.notification(target.GetDisplayName()+":"+sayline)
+               
+    ;SUP_F4SEVR has to be use instead of target.say() because Fallout 4 will hold previous voiceline inside its cache unlike Skyrim
+;    SUP_F4SEVR.MP3LoadFile(wavfilelocation)
+;    SUP_F4SEVR.MP3Play() 
+        ;while SUP_F4SEVR.MP3IsPlaying()
+;    while SUP_F4SEVR.MP3HasFinishedPlaying() != true
+;        Utility.wait (0.1)
+;    endWhile
+    ;debug.messagebox(sayline+" has finished playing")
+;    Utility.wait (MantellaWaitTimeBuffer.GetValue())
+;    SUP_F4SEVR.MP3Stop()
+;endfunction */
+
+
+function externalMantellaAudioPlay(string sayline, actor target)
+    sayline = setWavLocationAndGetReturnLine(sayline)
+    SUP_F4SEVR.WriteStringToFile("_mantella_audio_ready.txt", "true", 0)
+    debug.notification(target.GetDisplayName()+":"+sayline)
+    string audioIsPlaying = "true"
+    debug.trace("Starting while loop waiting for audio to finish playing")
+    While audioIsPlaying == "true" && repository.endFlagMantellaConversationOne == false
+        audioIsPlaying= SUP_F4SEVR.ReadStringFromFile("_mantella_audio_ready.txt",0,99)
+    endwhile
+endfunction
+
+function ConversationLoop(Actor target, Actor caster, String actorName, String sayLineFile)
+    String sayLine = SUP_F4SEVR.ReadStringFromFile(sayLineFile,0,99)
+    if sayLine != "False"
+        target.SetLookAt(caster, false)
+        Utility.wait (0.1)
+        ;This function is there to activate the lip file, the audio for MantellaDialogue line is actually 10 seconds of silence.
+        target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
+        ;###the function  internalMantellaAudioPlay is deprecated with F4SE 11.60   ###
+        ;internalMantellaAudioPlay(sayline, target) 
+        externalMantellaAudioPlay(sayline, target)
+        ; Set sayLine back to False once the voiceline has been triggered
+        SUP_F4SEVR.WriteStringToFile(sayLineFile, "False", 0)
+        localMenuTimer = -1
+    endIf
+endFunction
+
 function StartTextTimer()
-	int localMenuTimer=180
-    ;#################################################
+	localMenuTimer=180
     int localMenuTimerInt = Math.Floor(localMenuTimer)
 	Debug.Notification("Awaiting player input for "+localMenuTimerInt+" seconds")
 	String Monitorplayerresponse
@@ -168,6 +276,7 @@ function StartTextTimer()
 endFunction
 
 string function setWavLocationAndGetReturnLine(string currentLine)
+    ;This function tells FO4 from which wav file to read. It also reads the end of the line to be said and chops the end of the said line if it contains a Mutantella1 or Mutantella2 flag.
     int Mutantella1_Pos = SUP_F4SEVR.SUPStringFind(currentLine, "Mutantella1",0,0)
     if Mutantella1_Pos>=0
         currentLine = SUP_F4SEVR.stringFindSubString(currentLine,0,Mutantella1_Pos-1)
@@ -184,10 +293,19 @@ string function setWavLocationAndGetReturnLine(string currentLine)
     return currentLine
 endfunction
 
-;string function setwavlocation(string actorVoiceType)
-;    string currentActorVoiceSubstring= SUP_F4SE.StringFindSubString(actorVoiceType, 12,-1)
-;    int currentActorVoiceSpacePlacement = SUP_F4SE.SUPStringFind(currentActorVoiceSubstring, " ",0,0)
-;    currentActorVoiceSubstring= SUP_F4SE.StringFindSubString(currentActorVoiceSubstring, 0,(currentActorVoiceSpacePlacement-1))
-;    string wavfilelocation = "Data\\Sound\\Voice\\Mantella.esp\\"+currentActorVoiceSubstring+"\\MutantellaOutput.wav"
-;    return wavfilelocation
-;endfunction
+int function GetCurrentHourOfDay()
+	float Time = Utility.GetCurrentGameTime()
+	Time -= Math.Floor(Time) ; Remove "previous in-game days passed" bit
+	Time *= 24 ; Convert from fraction of a day to number of hours
+	int Hour = Math.Floor(Time) ; Get whole hour
+	return Hour
+endFunction
+
+
+Float Function ConvertMeterToGameUnits(Float meter)
+    Return Meter * meterUnits
+EndFunction
+
+Float Function ConvertGameUnitsToMeter(Float gameUnits)
+    Return gameUnits / meterUnits
+EndFunction

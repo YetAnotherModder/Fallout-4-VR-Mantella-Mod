@@ -1,14 +1,19 @@
 Scriptname MantellaRepository extends Quest
 Import SUP_F4SEVR
-int textkeycode
+int property textkeycode auto
 string property textinput auto
 bool property endFlagMantellaConversationOne auto
+bool property radiantEnabled auto
+float property radiantDistance auto
+float property radiantFrequency auto
 
 Event OnInit()
     ;change the below this is for debug only
     textkeycode=89
-    RegisterForKey(textkeycode)
-    debug.messagebox("Key registered "+textkeycode)
+    ;RegisterForKey(textkeycode)
+    radiantEnabled = true
+    radiantDistance = 20
+    radiantFrequency = 10
 EndEvent
 
 Event Onkeydown(int keycode)
@@ -22,10 +27,25 @@ Event Onkeydown(int keycode)
     endif
 Endevent
 
+Event OnMenuOpenCloseEvent(string asMenuName, bool abOpening)
+    if (asMenuName== "PipboyMenu")
+        if !abOpening
+	        OpenHotkeyPrompt()
+        endif
+    endif
+endEvent
+
+function setDialogueHotkey(int keycode)
+    unRegisterForKey(textkeycode)
+    textkeycode = keycode
+    RegisterForKey(textkeycode)
+endfunction
+
 function OpenTextMenu()
-;    TIM:TIM.Open(1,"Enter Mantella text dialogue","", 2, 250)
- ;   RegisterForExternalEvent("TIM::Accept","SetTextInput")
-;    RegisterForExternalEvent("TIM::Cancel","NoTextInput")
+    debug.messagebox("This feature is for desktop Fallout 4 only")
+    ;TIM:TIM.Open(1,"Enter Mantella text dialogue","", 2, 250)
+    ;RegisterForExternalEvent("TIM::Accept","SetTextInput")
+    ;RegisterForExternalEvent("TIM::Cancel","NoTextInput")
     ;
     ; Function SetFrequency(string freq)
     ;   Debug.MessageBox("frequency will set at "+ freq)
@@ -41,19 +61,52 @@ function OpenTextMenu()
 
 endfunction
 
+function OpenHotkeyPrompt()
+    debug.messagebox("This feature is for desktop Fallout 4 only")
+    ;TIM:TIM.Open(1,"Enter the keycode for the dialogue hotkey","", 0, 3)
+    ;RegisterForExternalEvent("TIM::Accept","TIMSetDialogueHotkeyInput")
+    ;RegisterForExternalEvent("TIM::Cancel","TIMNoDialogueHotkeyInput")
+    ;UnregisterForMenuOpenCloseEvent("PipboyMenu")
+    ;
+    ; Function SetFrequency(string freq)
+    ;   Debug.MessageBox("frequency will set at "+ freq)
+    ;   UnRegisterForExternalEvent("TIM::Accept")
+    ;   UnRegisterForExternalEvent("TIM::Cancel")
+    ; EndFunction
+    ;
+    ; Function NoSetFrequency(string freq)
+    ;   Debug.MessageBox("input frequency was aborted at "+ freq)
+    ;   UnRegisterForExternalEvent("TIM::Accept")
+    ;   UnRegisterForExternalEvent("TIM::Cancel")
+    ; EndFunction
+endfunction
+
+Function TIMSetDialogueHotkeyInput(string keycode)
+    ;Debug.notification("This text input was entered "+ text)
+    UnRegisterForExternalEvent("TIM::Accept")
+    UnRegisterForExternalEvent("TIM::Cancel")
+    setDialogueHotkey(keycode as int)
+EndFunction
+    
+Function TIMNoDialogueHotkeyInput(string keycode)
+    ;Debug.notification("Text input cancelled")
+    UnRegisterForExternalEvent("TIM::Accept")
+    UnRegisterForExternalEvent("TIM::Cancel")
+EndFunction
+
 Function SetTextInput(string text)
     ;Debug.notification("This text input was entered "+ text)
-   ; UnRegisterForExternalEvent("TIM::Accept")
-  ;  UnRegisterForExternalEvent("TIM::Cancel")
- ;   textinput = text
-;    ProcessDialogue(textinput)
+    UnRegisterForExternalEvent("TIM::Accept")
+    UnRegisterForExternalEvent("TIM::Cancel")
+    textinput = text
+    ProcessDialogue(textinput)
 EndFunction
     ;
 Function NoTextInput(string text)
     ;Debug.notification("Text input cancelled")
-  ;  UnRegisterForExternalEvent("TIM::Accept")
-  ;  UnRegisterForExternalEvent("TIM::Cancel")
-  ;  textinput = ""
+    UnRegisterForExternalEvent("TIM::Accept")
+    UnRegisterForExternalEvent("TIM::Cancel")
+    textinput = ""
 EndFunction
 
 Function ProcessDialogue (string text)

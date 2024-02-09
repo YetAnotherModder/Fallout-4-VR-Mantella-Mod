@@ -16,7 +16,6 @@ Compatibility issues :
 [WARS - Weapon Addition and Replacement Suite](https://www.nexusmods.com/fallout4/mods/73478).
 
 Known bugs:
-IMPORTANT : This esp will crash if loaded at the start of the game. Only load after exiting the initial vault!
 Mantella may crash while loading older voice models, this issue can usually be remediated by starting a Mantella conversation with a newer 3.0 model and trying again to start a conversation with the older voice model.
 Radiant targeting system will try to start conversation with inanimate objects like turrrets.
 Currently no support for unlisted NPCs and generic NPCs suchs as guards.
