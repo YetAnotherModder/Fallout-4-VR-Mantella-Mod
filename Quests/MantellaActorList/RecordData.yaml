@@ -1,10 +1,10 @@
 FormKey: 004C76:Mantella.esp
-VersionControl: 12324
+VersionControl: 12363
 EditorID: MantellaActorList
 Data:
   Flags:
   - RepeatsConditions
-  Unused: 21
+  Unused: 230
 UnusedConditions: []
 Aliases:
 - MutagenObjectType: QuestReferenceAlias
@@ -43,8 +43,58 @@ Aliases:
     Data:
       MutagenObjectType: FunctionConditionData
       Function: GetIsRace
+      ParameterOneRecord: 0027B9:DLCRobot.esm
+      ParameterOneNumber: 16787385
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 000C05:DLCworkshop01.esm
+      ParameterOneNumber: 33557509
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 033E79:DLCCoast.esm
+      ParameterOneNumber: 50544249
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 042EBB:DLCCoast.esm
+      ParameterOneNumber: 50605755
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
       ParameterOneRecord: 01A009:Fallout4.esm
       ParameterOneNumber: 106505
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 0BB7D9:Fallout4.esm
+      ParameterOneNumber: 767961
   - MutagenObjectType: ConditionFloat
     Flags:
     - OR
@@ -126,8 +176,6 @@ Aliases:
       ParameterOneRecord: 0EAFB6:Fallout4.esm
       ParameterOneNumber: 962486
   - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
     Unknown1: 0x1EB0A9
     ComparisonValue: 1
     Data:
@@ -241,6 +289,16 @@ Aliases:
     Data:
       MutagenObjectType: FunctionConditionData
       Function: GetIsRace
+      ParameterOneRecord: 0027B9:DLCRobot.esm
+      ParameterOneNumber: 16787385
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
       ParameterOneRecord: 001129:DLCRobot.esm
       ParameterOneNumber: 16781609
   - MutagenObjectType: ConditionFloat
@@ -251,8 +309,48 @@ Aliases:
     Data:
       MutagenObjectType: FunctionConditionData
       Function: GetIsRace
+      ParameterOneRecord: 000C05:DLCworkshop01.esm
+      ParameterOneNumber: 33557509
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 042EBB:DLCCoast.esm
+      ParameterOneNumber: 50605755
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 033E79:DLCCoast.esm
+      ParameterOneNumber: 50544249
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
       ParameterOneRecord: 01A009:Fallout4.esm
       ParameterOneNumber: 106505
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Unknown1: 0x1EB0A9
+    ComparisonValue: 1
+    Data:
+      MutagenObjectType: FunctionConditionData
+      Function: GetIsRace
+      ParameterOneRecord: 0BB7D9:Fallout4.esm
+      ParameterOneNumber: 767961
   - MutagenObjectType: ConditionFloat
     Flags:
     - OR
@@ -334,8 +432,6 @@ Aliases:
       ParameterOneRecord: 0EAFB6:Fallout4.esm
       ParameterOneNumber: 962486
   - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
     Unknown1: 0x1EB0A9
     ComparisonValue: 1
     Data:

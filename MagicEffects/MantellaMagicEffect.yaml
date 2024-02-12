@@ -6,14 +6,14 @@ VirtualMachineAdapter:
   - Name: MantellaEffectScript
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDialogueLine
+      Object: 001ED1:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: MantellaWaitTimeBuffer
       Object: 01E665:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000F99:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaDialogueLine
-      Object: 001ED1:Mantella.esp
 Name:
   TargetLanguage: English
   Value: Mantella Magic Effect
