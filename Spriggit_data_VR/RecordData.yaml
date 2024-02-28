@@ -1,0 +1,30 @@
+SpriggitSource:
+  PackageName: Spriggit.Yaml.Fallout4
+  Version: 0.16.0
+ModKey: Mantella.esp
+GameRelease: Fallout4VR
+ModHeader:
+  Stats:
+    NumRecords: 35
+    NextFormID: 211958
+  Author: DEFAULT
+  MasterReferences:
+  - Master: Fallout4.esm
+    FileSize: 0
+  - Master: DLCRobot.esm
+    FileSize: 0
+  - Master: DLCworkshop01.esm
+    FileSize: 0
+  - Master: DLCCoast.esm
+    FileSize: 0
+  - Master: DLCworkshop02.esm
+    FileSize: 0
+  - Master: DLCworkshop03.esm
+    FileSize: 0
+  - Master: DLCNukaWorld.esm
+    FileSize: 0
+  TransientTypes:
+  - FormType: 78
+    Links:
+    - 001ED1:Mantella.esp
+  INTV: 0x01000000
