@@ -21,6 +21,7 @@ Quest Property MantellaActorList  Auto
 ReferenceAlias Property PotentialActor1  Auto  
 ReferenceAlias Property PotentialActor2  Auto  
 MantellaRepository property repository auto
+Keyword Property AmmoKeyword Auto Const
 GlobalVariable property MantellaRadiantEnabled auto
 GlobalVariable property MantellaRadiantDistance auto
 GlobalVariable property MantellaRadiantFrequency auto
@@ -31,6 +32,7 @@ Worldspace PrewarWorldspace
 Event OnInit ()
 	PrewarWorldspace = Game.GetFormFromFile(0x000A7FF4, "Fallout4.esm") as Worldspace
 	TryToGiveItems()
+    LoadMantellaEvents()
 EndEvent
 
 Event OnPlayerTeleport()
@@ -61,10 +63,35 @@ Float Function ConvertGameUnitsToMeter(Float gameUnits)
 EndFunction
 
 Event OnPlayerLoadGame()
-    ;debug.messagebox("Game loaded")
-    ;debug.messagebox("OnPLayerLoadGame : Starting timer "+RadiantFrequencyTimerID+" for "+repository.radiantFrequency)
-    StartTimer(MantellaRadiantFrequency.getValue(),RadiantFrequencyTimerID)   
+    LoadMantellaEvents()
 EndEvent
+
+Function LoadMantellaEvents()
+    repository.reloadKeys()
+    registerForPlayerEvents()
+    ;Will clean up all all conversation loops if they're still occuring
+    repository.endFlagMantellaConversationOne = True
+    if !SUP_F4SEVR.ReadStringFromFile("_mantella__fallout4_folder.txt",0,2) 
+        SUP_F4SEVR.WriteStringToFile("_mantella__fallout4_folder.txt", "Set the folder this file is in as your fallout4_folder path in MantellaSoftware/config.ini", 0)
+    endif
+    Worldspace PlayerWorldspace = PlayerRef.GetWorldspace()
+    if(PlayerWorldspace != PrewarWorldspace && PlayerWorldspace != None)
+        StartTimer(MantellaRadiantFrequency.getValue(),RadiantFrequencyTimerID)   
+    endif
+Endfunction
+
+Function registerForPlayerEvents()
+        ;resets AddInventoryEventFilter, necessary for OnItemAdded & OnItemRemoved to work properl
+        RemoveAllInventoryEventFilters()
+        AddInventoryEventFilter(none) 
+        ;Register for player sleep events
+        RegisterForPlayerSleep()
+        ;resets RegisterForHitEvent & RegisterForRadiationDamageEvent at load, necessary for Onhit to work properly
+        UnregisterForAllHitEvents()
+        RegisterForHitEvent(PlayerRef)
+        UnregisterForAllRadiationDamageEvents()
+        RegisterForRadiationDamageEvent(PlayerRef)
+Endfunction
 
 Event Ontimer( int TimerID)
    ;debug.notification("timer "+RadiantFrequencyTimerID+" finished counting from "+repository.radiantFrequency)
@@ -131,5 +158,222 @@ Event Ontimer( int TimerID)
 
       StartTimer(MantellaRadiantFrequency.getValue(),RadiantFrequencyTimerID)   
    endif
-   
+EndEvent
+
+
+Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
+    if Repository.playerTrackingOnItemAdded
+        string sourceName = akSourceContainer.getbaseobject().getname()
+        if sourceName != "Power Armor" ;to prevent gameevent spam from the player entering power armors
+            string itemName = akBaseItem.GetName()
+            string itemPickedUpMessage = ""
+            if itemName == "Powered Armor Frame" 
+                itemPickedUpMessage = "The player entered power armor.\n"
+            else
+                if sourceName != "" 
+                    itemPickedUpMessage = "The player picked up " + itemName + " from " + sourceName + ".\n"
+                Else
+                    itemPickedUpMessage = "The player picked up " + itemName + ".\n"
+                endIf
+            Endif
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", itemPickedUpMessage, 2)
+        endif
+    endif
+EndEvent
+
+Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akDestContainer)
+    if Repository.playerTrackingOnItemRemoved && !akBaseItem.HasKeyword(AmmoKeyword)
+        string destName = akDestContainer.getbaseobject().getname()
+        if destName != "Power Armor" ;to prevent gameevent spam from the player exiting power armors 
+            string itemName = akBaseItem.GetName()
+            string itemDroppedMessage = ""
+            if itemName == "Powered Armor Frame" 
+                itemDroppedMessage = "The player exited power armor.\n"
+            else
+                if destName != "" 
+                    itemDroppedMessage = "The player placed " + itemName + " in/on " + destName + ".\n"
+                Else
+                    itemDroppedMessage = "The player dropped " + itemName + ".\n"
+                endIf
+            Endif
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", itemDroppedMessage, 2)
+        endif
+    endif
+endEvent
+
+String lastHitSource = ""
+String lastAggressor = ""
+Int timesHitSameAggressorSource = 0
+Event OnHit(ObjectReference akTarget, ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked, string apMaterial)
+    if repository.playerTrackingOnHit
+        string aggressor = akAggressor.getdisplayname()
+        string hitSource = akSource.getname()
+
+        ; avoid writing events too often (continuous spells record very frequently)
+        ; if the actor and weapon hasn't changed, only record the event every 5 hits
+        if ((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5)
+            lastHitSource = hitSource
+            lastAggressor = aggressor
+            timesHitSameAggressorSource = 0
+
+            if (hitSource == "None") || (hitSource == "")
+                ;Debug.MessageBox(aggressor + " punched the player.")
+                SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", aggressor + " punched the player.\n", 2)
+            else
+                if aggressor == PlayerRef.getdisplayname()
+                    if playerref.getleveledactorbase().getsex() == 0
+                        SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player hit himself with " + hitSource+".\n", 2)
+                    else
+                        SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player hit herself with " + hitSource+".\n", 2)
+                    endIf
+                else
+                    SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", aggressor + " hit the player with " + hitSource+".\n", 2)
+                endif
+            endIf
+        else
+            timesHitSameAggressorSource += 1
+        endIf
+    endif
+    ;RegisterForHitEvent necessary for Onhit to work properly
+    RegisterForHitEvent(PlayerRef)
+EndEvent
+
+Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+    ; check if radiant dialogue is playing, and end conversation if the player leaves the area
+    String radiant_dialogue_active = SUP_F4SEVR.ReadStringFromFile("_mantella_radiant_dialogue.txt", 0, 1)
+    if radiant_dialogue_active == "True"
+        SUP_F4SEVR.WriteStringToFile("_mantella_end_conversation.txt", "True", 0)
+    endIf
+
+    if repository.playerTrackingOnLocationChange
+        String currLoc = (akNewLoc as form).getname()
+        if currLoc == ""
+            currLoc = "Commonwealth"
+        endIf
+        ;Debug.MessageBox("Current location is now " + currLoc)
+        SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "Current location is now " + currLoc+".\n", 2)
+    endif
+endEvent
+
+Event OnItemEquipped(Form akBaseObject, ObjectReference akReference)
+    if repository.playerTrackingOnObjectEquipped
+        string itemEquipped = akBaseObject.getname()
+        string itemenchant = akBaseObject.GetEnchantment().getname()
+        if itemenchant != "" ;filtering out enchantments to avoid spamming the LLM with confusing feedback
+            ;Debug.MessageBox("The player equipped " + itemEquipped)
+            if itemEquipped != "Mantella"
+                SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player equipped " + itemEquipped + ".\n", 2)
+            endif
+        endif
+    endif
+endEvent
+
+
+Event OnItemUnequipped (Form akBaseObject, ObjectReference akReference)
+    if repository.playerTrackingOnObjectUnequipped
+        string itemUnequipped = akBaseObject.getname()
+        ;Debug.MessageBox("The player unequipped " + itemUnequipped)
+        if itemUnequipped != "Mantella Enchantment" && itemUnequipped != "Mantella"
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player unequipped " + itemUnequipped + ".\n", 2)
+        Endif
+    endif
+endEvent
+
+Event OnSit(ObjectReference akFurniture)
+    if repository.playerTrackingOnSit
+        ;Debug.MessageBox("The player sat down.")
+        String furnitureName = akFurniture.getbaseobject().getname()
+        if furnitureName != "Power Armor"
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player rested on / used a(n) "+furnitureName+".\n", 2)
+        endif
+    endif
+endEvent
+
+
+Event OnGetUp(ObjectReference akFurniture)
+    if repository.playerTrackingOnGetUp
+        ;Debug.MessageBox("The player stood up.")
+        String furnitureName = akFurniture.getbaseobject().getname()
+        if furnitureName != "Power Armor"
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player stood up from a(n) "+furnitureName+".\n", 2)
+        endif    
+    endif
+EndEvent
+
+
+Event OnDying(Actor akKiller)
+    SUP_F4SEVR.WriteStringToFile("_mantella_end_conversation.txt", "True",0)
+EndEvent
+
+string lastWeaponFired =""
+Event OnPlayerFireWeapon(Form akBaseObject)
+    if repository.playerTrackingFireWeapon 
+        string weaponName=akBaseObject.getname()
+        if weaponName!="Mantella"
+            if lastWeaponFired!=akBaseObject && !repository.EventFireWeaponSpamBlocker
+                SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player fired their "+akBaseObject.getname()+" weapon.\n", 2)
+                lastWeaponFired=akBaseObject
+                repository.WeaponFiredCount+=1
+                if repository.WeaponFiredCount>=3
+                    repository.EventFireWeaponSpamBlocker=true
+                    repository.WeaponFiredCount=0
+                endif
+            endif    
+        endif
+    endif
+endEvent
+
+Event OnRadiationDamage(ObjectReference akTarget, bool abIngested)
+    if repository.playerTrackingRadiationDamage
+        if ( abIngested )
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player consumed irradiated sustenance.\n", 2)
+        elseif repository.EventRadiationDamageSpamBlocker!=true
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", "The player took damage from radiation exposure.\n", 2)
+            repository.EventRadiationDamageSpamBlocker=true
+        endif
+    endif
+    RegisterForRadiationDamageEvent(PlayerRef)
+EndEvent
+
+float sleepstartTime
+Event OnPlayerSleepStart(float afSleepStartTime, float afDesiredSleepEndTime, ObjectReference akBed)
+    sleepstartTime=afSleepStartTime
+EndEvent
+
+Event OnPlayerSleepStop(bool abInterrupted, ObjectReference akBed)
+    if repository.playerTrackingSleep
+        float timeSlept= Utility.GetCurrentGameTime()-sleepstartTime
+        string sleepMessage
+        string bedName=akBed.getbaseobject().getname()
+        string messagePrefix
+        if abInterrupted
+            messagePrefix="The player's sleep in a "+bedName+" was interrupted after "
+        else
+            messagePrefix="The player slept in a "+bedName+" for "
+        endif
+        ;if timeSlept>1
+        ;    int daysPassed=Math.floor(timeSlept)
+        ;    float remainingDayFraction=(timeSlept- daysPassed)
+        ;    int hoursPassed=Math.Floor(remainingDayFraction*24)
+        ;    sleepMessage=messagePrefix+daysPassed+" days and "+hoursPassed+" hours.\n"
+        ;    SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", sleepMessage, 2)
+        ;Else
+            int hoursPassed=Math.Floor(timeSlept*24)
+            sleepMessage=messagePrefix+hoursPassed+" hours.\n"
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt", sleepMessage, 2)
+        ;endif
+    endif
+EndEvent
+
+Event OnCripple(ActorValue akActorValue, bool abCrippled)
+    if repository.playerTrackingCripple
+        string messageSuffix=" is crippled.\n"
+        if !abCrippled
+            messageSuffix=" is now healed.\n"
+        endif
+        if akActorValue
+            SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt","The player's "+akActorValue.getname()+messageSuffix,2)
+        endif
+    endif
+
 EndEvent
