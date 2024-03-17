@@ -11,6 +11,7 @@ The esp is compatible with Fallout 4 VR.
 To operate the mod these plugins are required:
 [F4SE](https://f4se.silverlock.org/).
 [SUP F4SEVR](https://www.nexusmods.com/fallout4/mods/64420).
+[Fallout 4 Version Check Patcher](https://www.nexusmods.com/fallout4/mods/42497?tab=description).
 
 Compatibility issues : 
 [WARS - Weapon Addition and Replacement Suite](https://www.nexusmods.com/fallout4/mods/73478).
