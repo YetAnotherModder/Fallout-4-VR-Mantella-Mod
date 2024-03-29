@@ -24,4 +24,4 @@ Currently no support for unlisted NPCs and generic NPCs suchs as guards.
 Credits : 
 TommInfinite for SUP F4SE
 Kinggath for parts of the ListenerScript
-ArtFromTheMachine, Pendrokar, Leidtier, swwu, Leidtier, Mahe, teddybear082, Haurrus, SiftingSands, giamel, Pathos for Mantella
+ArtFromTheMachine, Pendrokar, Leidtier, swwu, slavkovsky77, Mahe, teddybear082, Haurrus, SiftingSands, giamel, Pathos for Mantella
