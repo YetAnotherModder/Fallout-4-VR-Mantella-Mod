@@ -71,8 +71,9 @@ Event OnPlayerLoadGame()
 EndEvent
 
 Function LoadMantellaEvents()
+
     int currentSUPversion
-    currentSUPversion = GetSUPF4SEVersion()
+    currentSUPversion = SUP_F4SEVR.GetSUPF4SEVersion()
     if currentSUPversion == 0
         debug.messagebox("F4SE or SUP_F4SEVR not properly installed, Mantella will not work correctly")
     endif
@@ -87,7 +88,7 @@ Function LoadMantellaEvents()
     if(PlayerWorldspace != PrewarWorldspace && PlayerWorldspace != None)
         StartTimer(MantellaRadiantFrequency.getValue(),RadiantFrequencyTimerID)   
     endif
-    debug.notification("Currently running Mantella 0.8.0 VR")
+    debug.notification("Currently running Mantella 0.8.2 VR")
 Endfunction
 
 Function registerForPlayerEvents()
@@ -102,6 +103,13 @@ Function registerForPlayerEvents()
         UnregisterForAllRadiationDamageEvents()
         RegisterForRadiationDamageEvent(PlayerRef)
 Endfunction
+
+
+
+
+
+
+
 
 Event Ontimer( int TimerID)
    ;debug.notification("timer "+RadiantFrequencyTimerID+" finished counting from "+repository.radiantFrequency)
@@ -386,4 +394,11 @@ Event OnCripple(ActorValue akActorValue, bool abCrippled)
         endif
     endif
 
+EndEvent
+
+Event OnPlayerHealTeammate(Actor akTeammate)
+    if repository.playerTrackingHealTeammate
+        string messageEvent="The player has healed "+akTeammate.getdisplayname()+"."
+        SUP_F4SEVR.WriteStringToFile("_mantella_in_game_events.txt",messageEvent,2)
+    endif
 EndEvent
