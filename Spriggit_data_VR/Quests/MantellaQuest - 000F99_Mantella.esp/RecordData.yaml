@@ -1,0 +1,327 @@
+FormKey: 000F99:Mantella.esp
+VersionControl: 12475
+EditorID: MantellaQuest
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaRepository
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: RadsAV
+      Object: 0002E1:Fallout4.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaSpell
+      Object: 0090C7:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: HealthAV
+      Object: 0002D4:Fallout4.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: ConstantsScript
+      Object: 066FBB:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: ActivatePerk
+      Object: 084DED:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 066FBB:Mantella.esp
+  Script:
+    Name: Fragments:Quests:QF_MantellaQuest_07000F99
+  Fragments:
+  - Stage: 405
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0405_Item_00
+  - Stage: 202
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0202_Item_00
+  - Stage: 404
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0404_Item_00
+  - Stage: 601
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0601_Item_00
+  - Stage: 203
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0203_Item_00
+  - Stage: 602
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0602_Item_00
+  - Stage: 503
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0503_Item_00
+  - Stage: 407
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0407_Item_00
+  - Stage: 504
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0504_Item_00
+  - Stage: 502
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0502_Item_00
+  - Stage: 603
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0603_Item_00
+  - Stage: 201
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0201_Item_00
+  - Stage: 406
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0406_Item_00
+  - Stage: 306
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0306_Item_00
+  - Stage: 605
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0605_Item_00
+  - Stage: 604
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0604_Item_00
+  - Stage: 305
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0305_Item_00
+  - Stage: 301
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0301_Item_00
+  - Stage: 501
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0501_Item_00
+  - Stage: 304
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0304_Item_00
+  - Stage: 307
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0307_Item_00
+  - Stage: 402
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0402_Item_00
+  - Stage: 401
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0401_Item_00
+  - Stage: 302
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0302_Item_00
+  - Stage: 205
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0205_Item_00
+  - Stage: 408
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0408_Item_00
+  - Stage: 403
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0403_Item_00
+  - Stage: 204
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0204_Item_00
+  - Stage: 303
+    Unknown2: 1
+    ScriptName: Fragments:Quests:QF_MantellaQuest_07000F99
+    FragmentName: Fragment_Stage_0303_Item_00
+  Aliases:
+  - Property:
+      Name: ''
+      Object: 000F99:Mantella.esp
+      Alias: 0
+    Scripts:
+    - Name: MantellaListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaSettingsHolotape
+        Object: 00D51A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaRadiantDistance
+        Object: 015DC0:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor1
+        Object: 004C76:Mantella.esp
+        Alias: 0
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000F99:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 066FBB:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: AmmoKeyword
+        Object: 0F4AE8:Fallout4.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor2
+        Object: 004C76:Mantella.esp
+        Alias: 1
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaSpell
+        Object: 0090C7:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaRadiantEnabled
+        Object: 00D51E:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaGun
+        Object: 001734:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaActorList
+        Object: 004C76:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaRadiantFrequency
+        Object: 015DC1:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Fallout4.esm
+Name:
+  TargetLanguage: English
+  Value: Mantella Quest
+Data:
+  Flags:
+  - StartGameEnabled
+  - StartsEnabled
+  - RunOnce
+  Unused: 82
+UnusedConditions: []
+Stages:
+- {}
+- Index: 201
+  LogEntries:
+  - Flags: []
+    Note: This trigger the prompt menu to enter the text response hotkey on menu close
+- Index: 202
+  LogEntries:
+  - Flags: []
+    Note: This triggers the prompt to set the HTTP prompt on menu close
+- Index: 203
+  LogEntries:
+  - Flags: []
+    Note: This trigger the prompt menu to enter the start conversation hotkey
+- Index: 204
+  LogEntries:
+  - Flags: []
+    Note: This triggers the prompt to set the game event hotkey on menu close
+- Index: 205
+  LogEntries:
+  - Flags: []
+    Note: This triggers the prompt to set the text/vision hotkey on menu close
+- Index: 301
+  LogEntries:
+  - Flags: []
+    Note: This resets all repository variables to default
+- Index: 302
+  LogEntries:
+  - Flags: []
+    Note: This will stop all ongoing NPC conversations
+- Index: 303
+  LogEntries:
+  - Flags: []
+    Note: This turns off dialogue subtitle notifications.
+- Index: 304
+  LogEntries:
+  - Flags: []
+    Note: This turns on dialogue subtitle notifications.
+- Index: 305
+  LogEntries:
+  - Flags: []
+    Note: Turn microphone OFF
+- Index: 306
+  LogEntries:
+  - Flags: []
+    Note: Turn microphone ON
+- Index: 307
+  LogEntries:
+  - Flags: []
+    Note: Toggles ON/OFF the MantellaActivatePerk
+- Index: 401
+  LogEntries:
+  - Flags: []
+    Note: This turns off player event tracking.
+- Index: 402
+  LogEntries:
+  - Flags: []
+    Note: This turns on player event tracking.
+- Index: 403
+  LogEntries:
+  - Flags: []
+    Note: This turns off NPC event tracking.
+- Index: 404
+  LogEntries:
+  - Flags: []
+    Note: This turns on NPC event tracking.
+- Index: 405
+  LogEntries:
+  - Flags: []
+    Note: This turns OFF the F4SE crosshair event tracking.
+- Index: 406
+  LogEntries:
+  - Flags: []
+    Note: This turns ON the F4SE crosshair event tracking.
+- Index: 407
+  LogEntries:
+  - Flags: []
+    Note: 'This turns off Vision analysis by LLM. '
+- Index: 408
+  LogEntries:
+  - Flags: []
+    Note: 'This turns on Vision analysis by LLM. '
+- Index: 501
+  LogEntries:
+  - Flags: []
+    Note: This turns OFF NPC Aggro actions.
+- Index: 502
+  LogEntries:
+  - Flags: []
+    Note: This turns ON NPC Aggro actions.
+- Index: 503
+  LogEntries:
+  - Flags: []
+    Note: This turns OFF NPC Follow actions.
+- Index: 504
+  LogEntries:
+  - Flags: []
+    Note: This turns ON NPC Follow actions.
+- Index: 601
+  LogEntries:
+  - Flags: []
+    Note: This lists NPC Actions menu state
+- Index: 602
+  LogEntries:
+  - Flags: []
+    Note: This lists the Main Settings menu state
+- Index: 603
+  LogEntries:
+  - Flags: []
+    Note: This lists the HTTP Settings menu state
+- Index: 604
+  LogEntries:
+  - Flags: []
+    Note: This list the Events menu state
+- Index: 605
+  LogEntries:
+  - Flags: []
+    Note: This list the Hotkeys menu state
+Aliases:
+- MutagenObjectType: QuestReferenceAlias
+  Name: PlayerRef
+  Flags: []
+  UniqueActor: 000007:Fallout4.esm
+  VoiceTypes: Null
